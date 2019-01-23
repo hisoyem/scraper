@@ -13,25 +13,25 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 
 def parsing(url):
-    resp = requests.get(url)
-    txt = resp.text
-    soup = BeautifulSoup(txt, features='lxml')
-    imgTitleList = soup.find_all('image:title')
-    print('Address: {}'.format(url))
-    #for item in imgTitleList:
-     #   var = item.text.split(' ')
-       #f result != []:
-         #   parent = item.parent.parent
-           # listbox1.insert(END, parent.find('loc').text)
-            #print(result)
+    pass
+
 
 def enter(event):
-    print('enter has started')
-    pool = ThreadPool(8)
-    results = pool.map(parsing, fullListUrl)
-    pool.close()
-    pool.join()
-    print('enter has ended')
+    """Получение ключевых слов"""
+    keywords = list(map(str, entry1.get().upper().split()))
+    for site in fullListUrl:
+        resp = requests.get(site)
+        txt = resp.text
+        soup = BeautifulSoup(txt, features='lxml')
+        imgTitleList = soup.find_all('image:title')
+
+        for item in imgTitleList:
+            var = item.text.split(' ')
+            result = list(set(keywords) & set(var))
+            if result != []:
+                parent = item.parent.parent
+                listbox1.insert(END, parent.find('loc').text)
+
 
 
 
@@ -97,8 +97,6 @@ entry1.pack(fill=X)
 entry1.bind("<Return>", enter)
 entry1.bind("<Button-2>", clearEntry)
 
-"""Получение ключевых слов"""
-keywords = list(map(str, entry1.get().upper().split()))
 
 #Создание фрейма, в котором будут находиться listbox1 и scrollbar1
 frame1 = Frame(tab1)
